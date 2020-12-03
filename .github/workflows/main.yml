@@ -16,7 +16,7 @@ jobs: # GitHub Actions Jobs 預設都是 Parallel，如果要走 Sequential 則�
           ls -al
 
   specific-runner:
-    runs-on: test_runner # 讓 Stage 使用特定 Runner 執行
+    runs-on: label-1 # 讓 Stage 使用特定 Runner 執行
     steps:
       - uses: actions/checkout@v2 # 需使用 actions 的 checkout 來 Pull Repository
       - run: pwd
