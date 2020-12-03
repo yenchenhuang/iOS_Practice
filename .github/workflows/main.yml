@@ -1,0 +1,43 @@
+name: GitHub Actions
+
+on: # 定義 Actions 發生時間
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs: # GitHub Actions Jobs 預設都是 Parallel，如果要走 Sequential 則須透過定義 job.strategy.max-parallel 來限縮 Parallel
+  default-runner:
+    runs-on: ubuntu-latest # 不同於 GitLab Runner 可用之 Docker，GitHub Actions 僅有提供 Windows, Ubuntu, macOS 的 Runner 環境
+    steps:
+      - uses: actions/checkout@v2 # 有別於 GitLab，GitHub Actions 是開放第三方撰寫的，可參考 https://github.com/marketplace?type=actions
+      - run: |
+          pwd
+          ls -al
+
+  specific-runner:
+    runs-on: test_runner # 讓 Stage 使用特定 Runner 執行
+    steps:
+      - uses: actions/checkout@v2 # 需使用 actions 的 checkout 來 Pull Repository
+      - run: pwd
+
+  env-var:
+    runs-on: ubuntu-latest
+    env: # 定義環境變數
+      TOKEN: 1234567890
+    steps:
+      - name: Print The Environment Variable # 可以自定義 Steps 名稱
+        run: |
+          echo $TOKEN
+          echo $PATH
+          echo $GITHUB_WORKSPACE
+
+  artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is my testing artifact." >> artifact.txt
+      - uses: actions/upload-artifact@v2 # 需使用 actions 的 checkout 來上傳 Artifacts
+        with:
+          name: txt-artifacts
+          path: ./*.txt
+
